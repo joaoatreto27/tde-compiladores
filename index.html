@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analisador Sintático</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>Analisador Sintático</h1>
+    </header>
+
+    <section class="entrada-section">
+
+      <div class="info-flex">
+      <div class="info-box">
+        <strong>Gramática:</strong>
+        S ::= a A c | c B | d C c
+        A ::= b D d | ε
+        B ::= c B c | d D a
+        C ::= d C | a A c
+        D ::= b D | c B | ε
+      </div>
+
+      <div class="info-box">
+        <strong>FIRST:</strong>
+        FIRST(S) = { a, c, d }
+        FIRST(A) = { b, ε }
+        FIRST(B) = { c, d }
+        FIRST(C) = { d, a }
+        FIRST(D) = { b, c, ε }
+      </div>
+
+      <div class="info-box">
+        <strong>FOLLOW:</strong>
+        FOLLOW(S) = { $ }
+        FOLLOW(A) = { c }
+        FOLLOW(B) = { c, d, a, $ }
+        FOLLOW(C) = { c }
+        FOLLOW(D) = { d, a }
+      </div>
+    </div>
+
+      <div>
+        <strong>Tabela de Parsing:</strong>
+        <table class="parsing-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>a</th>
+              <th>b</th>
+              <th>c</th>
+              <th>d</th>
+              <th>$</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>S</td>
+              <td>S → a A c</td>
+              <td></td>
+              <td>S → c B</td>
+              <td>S → d C c</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>A</td>
+              <td></td>
+              <td>A → b D d</td>
+              <td>A → ε</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>B</td>
+              <td></td>
+              <td></td>
+              <td>B → c B c</td>
+              <td>B → d D a</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>C</td>
+              <td>C → a A c</td>
+              <td></td>
+              <td>C → d C</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>D</td>
+              <td></td>
+              <td>D → b D</td>
+              <td>D → c B</td>
+              <td>D → ε</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <br/>
+      <label for="tokenInput">Cadeia de entrada:</label>
+      <input type="text" id="tokenInput" placeholder="Digite a cadeia ou clique em Gerar Cadeia" />
+
+      <div class="botoes">
+        <button onclick="executarProximoPasso()">Executar Passo</button>
+        <button onclick="executarTudo()">Executar Tudo</button>
+        <button onclick="inicializarSentenca()">Gerar Cadeia</button>
+        <button onclick="resetarAnalisador()">Resetar Pilha</button>
+      </div>
+    </section>
+
+    <section class="tabela-section">
+      <table id="resolutionTable"></table>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
