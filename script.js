@@ -230,3 +230,63 @@ function resetarAnalisador(){
 
   campoEntrada.value = "";
 }
+
+
+let derivacaoAtual = [""];
+let derivacaoFinalizada = false;
+
+function aplicarProducao(simbolo, producao) {
+    if (derivacaoFinalizada) return;
+
+    const ultimaSentenca = derivacaoAtual[derivacaoAtual.length - 1];
+
+    const index = ultimaSentenca.indexOf(simbolo);
+    if (index === -1) {
+        return;
+    }
+
+    const novaSentenca =
+        ultimaSentenca.slice(0, index) +
+        (producao === epsilon ? "" : producao) +
+        ultimaSentenca.slice(index + 1);
+
+    derivacaoAtual.push(novaSentenca);
+    atualizarTabelaDerivacao();
+
+    if (!/[A-Z]/.test(novaSentenca)) {
+        derivacaoFinalizada = true;
+
+        campoEntrada.value = novaSentenca;
+    }
+}
+
+function atualizarTabelaDerivacao() {
+    const estado = document.getElementById("estadoDerivacao");
+    const opcoes = document.getElementById("opcoesProducao");
+
+    const sentencaAtual = derivacaoAtual[derivacaoAtual.length - 1];
+    estado.innerText = `Sentença Atual: ${sentencaAtual}`;
+    opcoes.innerHTML = "";
+
+    const naoTerminaisPresentes = [...new Set(sentencaAtual.split('').filter(c => /[A-Z]/.test(c)))];
+
+    naoTerminaisPresentes.forEach(naoTerminal => {
+        const nt = tabelaProducoes.find(p => p.simbolo === naoTerminal);
+        if (nt) {
+            nt.producoes.forEach(prod => {
+                const botao = document.createElement("button");
+                botao.innerText = `${naoTerminal} → ${prod.producao}`;
+                botao.onclick = () => aplicarProducao(naoTerminal, prod.producao);
+                opcoes.appendChild(botao);
+            });
+        }
+    });
+}
+
+function resetarDerivacao() {
+    derivacaoAtual = ["S"];
+    derivacaoFinalizada = false;
+    atualizarTabelaDerivacao();
+}
+
+resetarDerivacao(); 
